@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const port = 8900
+var bodyParser = require('body-parser')
+var jsonParser = bodyParser.json()
 
 // Setup Cors
 const cors=require("cors");
@@ -13,25 +15,62 @@ app.use(cors(corsOptions))
 
 // Setup MySQL
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
-  database : 'SE450'
-});
+const { makeDb } = require('mysql-async-simple');
 
-app.post('/getUserData', (req, res) => {
-  console.log("API REQUEST RECEIVED");
+function establishConnection () {
+  var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'ServerAdmin',
+    password : 'ifyify',
+    database : 'ifyify',
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+  });
 
-  // Make MySQL Query Here
-  connection.connect();
+  return connection;
+}
 
-  connection.end();
+// We will organize this better next sprint
+async function main() {
+  app.post('/getUserData', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
 
-  // This is how we send the data back
-  res.send('Hello World!');
-})
+    // Establish Database Conneciton
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`)
-})
+    // Setup Response Data
+    let userData;
+
+    // Make Query
+    try {
+      let sql = `SELECT * from MEMBER WHERE UserID = '${req.body.uid}'`;
+      userData = await db.query(connection, sql);
+
+      if (userData.length === 0) {
+        console.log("Adding User to Database");
+        let sql = `INSERT into MEMBER VALUES ('${req.body.uid}', '${req.body.username}', '${req.body.firstName}', '${req.body.lastName}', '${req.body.email}', null)`;
+        db.query(connection, sql);
+
+        // Now Requery the Database (This might be unnecessary as I think about it, but it keeps everything uniform at least, we may remove later)
+        sql = `SELECT * from MEMBER WHERE UserID = '${req.body.uid}'`;
+        userData = await db.query(connection, sql);
+      }
+    } catch (e) {
+        console.log(e);
+    } finally {
+        await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Data Back\n");
+    res.send(userData);
+  })
+
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`)
+  })
+
+}
+
+main();
