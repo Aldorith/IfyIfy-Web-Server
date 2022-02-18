@@ -55,6 +55,11 @@ async function main() {
         // Now Requery the Database (This might be unnecessary as I think about it, but it keeps everything uniform at least, we may remove later)
         sql = `SELECT * from MEMBER WHERE UserID = '${req.body.uid}'`;
         userData = await db.query(connection, sql);
+
+        // Here
+        //communities = ....;
+        //userData.communities = communities;
+    
       }
     } catch (e) {
         console.log(e);
