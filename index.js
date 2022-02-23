@@ -6,7 +6,7 @@ var jsonParser = bodyParser.json()
 
 // Setup Cors
 const cors=require("cors");
-const corsOptions ={
+const corsOptions = {
    origin:'*',
    credentials:true,
    optionSuccessStatus:200,
@@ -59,7 +59,7 @@ async function main() {
         // Here
         //communities = ....;
         //userData.communities = communities;
-    
+
       }
     } catch (e) {
         console.log(e);
