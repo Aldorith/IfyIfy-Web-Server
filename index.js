@@ -72,14 +72,7 @@ async function main() {
     res.send(userData);
   })
 
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
-  })
-
-}
-
-async function addCommunity(){
-  app.post('/addCommunity', jsonParser, async function (req, res) {
+  app.post('/createCommunity', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
 
     // Establish Database Connection
@@ -92,21 +85,43 @@ async function addCommunity(){
 
     // Make Query
     try {
-      let sql = `SELECT * from MEMBER WHERE communityID = '${req.body.communityID}'`; // This seems off, I don't think you want to be selecting from MEMBER
+      let sql = `SELECT CommunityID from COMMUNITY WHERE CommunityName = '${req.body.communityName}'`;
       communityData = await db.query(connection, sql);
 
-      if (communityData.length > 0) {
+      if (communityData.length !== 0) {
         console.log("Error, that Community Already Exists");
 
-        console.log("Sending Data Back\n");
-        res.send(null);
+        // - TO DO Add more error checking
+
+        console.log("Sending Error Messages Back\n");
+        // Error Message
+        /*
+        900 - Community Already Exisits
+        */
+        let sendBack = {statusCode: 900};
+        res.send(sendBack);
       }
       else
       {
         console.log("Adding Community to Database");
-        let sql = `INSERT into MEMBER VALUES ('${req.body.communityID}', '${req.body.communityDesciption}',null)`;
+
+        // Generate Unique CommunityID
+        let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
+        let communityJoinCode = num.slice(3,10);
+
+        // // TODO: Verify joinCode does not already exist
+        // Connor B. can you do this
+
+        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}',null, null, null, '${communityJoinCode}')`;
         db.query(connection, sql);
 
+        // Get ID
+        sql = `SELECT * from COMMUNITY WHERE CommunityName = '${req.body.communityName}'`;
+        communityData = await db.query(connection, sql);
+        communityData.statusCode = 200;
+
+        sql = `INSERT into USERCOMMUNITY VALUES ('${req.body.uid}','${communityData[0].CommunityID}', true, 3)`;
+        db.query(connection, sql);
       }
     } catch (e) {
       console.log(e);
@@ -122,6 +137,7 @@ async function addCommunity(){
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
   })
+
 }
 
 main();
