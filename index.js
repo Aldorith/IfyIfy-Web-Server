@@ -92,7 +92,7 @@ async function addCommunity(){
 
     // Make Query
     try {
-      let sql = `SELECT * from MEMBER WHERE communityID = '${req.body.communityID}'`;
+      let sql = `SELECT * from MEMBER WHERE communityID = '${req.body.communityID}'`; // This seems off, I don't think you want to be selecting from MEMBER
       communityData = await db.query(connection, sql);
 
       if (communityData.length > 0) {
