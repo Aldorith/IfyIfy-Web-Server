@@ -19,7 +19,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Display Images
-app.use(express.static(__dirname+'/uploads'));
+app.use(express.static(__dirname+'uploads'));
 
 // Setup MySQL
 const mysql = require('mysql');
@@ -168,6 +168,34 @@ async function main() {
     // Send the data back
     console.log("Sending Data Back\n");
     res.send(communityData);
+  })
+
+  // Chat
+  app.post('/getMessageData', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let messageData;
+
+    // Make Query
+    try {
+      let sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commId}' and ChannelID = '${req.body.chanId}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      messageData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log(messageData[0].UserName);
+    console.log("Sending Data Back\n");
+    res.send(messageData);
   })
 
   // Upload Profile Image
