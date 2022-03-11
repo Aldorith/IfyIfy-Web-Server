@@ -1,8 +1,13 @@
-const express = require('express')
-const app = express()
-const port = 8900
-var bodyParser = require('body-parser')
-var jsonParser = bodyParser.json()
+const express = require('express');
+const app = express();
+const port = 8900;
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+
+// Image Requirements
+const path = require("path");
+const multer = require("multer");
+const fs = require('fs');
 
 // Setup Cors
 const cors=require("cors");
@@ -11,10 +16,13 @@ const corsOptions = {
    credentials:true,
    optionSuccessStatus:200,
 }
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
+
+// Display Images
+app.use(express.static(__dirname+'/uploads'));
 
 // Setup MySQL
-var mysql      = require('mysql');
+const mysql = require('mysql');
 const { makeDb } = require('mysql-async-simple');
 
 function establishConnection () {
@@ -29,8 +37,35 @@ function establishConnection () {
   return connection;
 }
 
+// Setup Images
+const profilePhotoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // First Create correct folder if correct folder does not exist
+    let dir = './uploads/' + req.body.uid;
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+
+    // Set File Directory
+    cb(null, ('uploads/'+req.body.uid))
+  },
+  filename: function(req, file, cb){
+    let fileName = Date.now() + path.extname(file.originalname);
+    cb(null, fileName);
+
+    // Update Database
+  }
+});
+
+const profilePhotoUpload = multer({ storage: profilePhotoStorage });
+
+// Will Sort this out later
+// let images = require('./features/images')(app);
+
+
 // We will organize this better next sprint
 async function main() {
+  // Get User Data
   app.post('/getUserData', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
 
@@ -72,6 +107,7 @@ async function main() {
     res.send(userData);
   })
 
+  // Create Community
   app.post('/createCommunity', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
 
@@ -134,10 +170,18 @@ async function main() {
     res.send(communityData);
   })
 
+  // Upload Profile Image
+  app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
+    console.log("Photo Uploaded by " + req.body.uid);
+  })
+
+  // Get Images
+
+  // Delete Images
+
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
   })
-
 }
 
 main();
