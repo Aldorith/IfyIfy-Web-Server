@@ -107,6 +107,34 @@ async function main() {
     res.send(userData);
   })
 
+  // Get User Community Data
+  app.post('/getUserCommunityData', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let userCommunityData;
+
+    // Make Query
+    try {
+      let sql = `Select COMMUNITY.CommunityID, CommunityName from USERCOMMUNITY, COMMUNITY where UserCommunity.UserID = '${req.body.uid}' and USERCOMMUNITY.CommunityID = COMMUNITY.CommunityID`;
+      userCommunityData = await db.query(connection, sql);
+
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Data Back\n");
+    res.send(userCommunityData);
+  })
+
   // Load Community
   app.post('/getCommunityData', jsonParser, async function (req, res) {
     // Establish Database Connection
