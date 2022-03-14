@@ -107,3 +107,4 @@ dist
 /.idea/vcs.xml
 /.idea/workspace.xml
 /uploads/
+/public/uploads/

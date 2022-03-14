@@ -18,8 +18,8 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-// Display Images
-app.use(express.static(__dirname+'uploads'));
+// Setup route for profile photos
+app.use('/profilePhotos', express.static('public/uploads/profilePhotos'));
 
 // Setup MySQL
 const mysql = require('mysql');
@@ -41,19 +41,18 @@ function establishConnection () {
 const profilePhotoStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     // First Create correct folder if correct folder does not exist
-    let dir = './uploads/' + req.body.uid;
+    let dir = './public/uploads/profilePhotos/';
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
     }
 
     // Set File Directory
-    cb(null, ('uploads/'+req.body.uid))
+    cb(null, ('public/uploads/profilePhotos/'));
   },
   filename: function(req, file, cb){
-    let fileName = Date.now() + path.extname(file.originalname);
+    let fileName = req.body.uid + path.extname(file.originalname);
+    //Date.now() + path.extname(file.originalname)
     cb(null, fileName);
-
-    // Update Database
   }
 });
 
@@ -204,6 +203,11 @@ async function main() {
   })
 
   // Get Images
+  /*
+  app.post('/getProfilePhoto', jsonParser, async function (req, res) {
+    res.sendFile(__dirname + `/public/uploads/profilePhotos/${req.body.uid}.png`);
+  })
+  */
 
   // Delete Images
 
