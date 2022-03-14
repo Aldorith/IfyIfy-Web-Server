@@ -106,6 +106,31 @@ async function main() {
     res.send(userData);
   })
 
+  // Load Community
+  app.post('/getCommunityData', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let communityData;
+
+    // Make Query
+    try {
+      let sql = `SELECT * from COMMUNITY WHERE CommunityID = '${req.body.communityID}'`;
+      communityData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Data Back\n");
+    res.send(communityData);
+  })
+
   // Create Community
   app.post('/createCommunity', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
@@ -201,13 +226,6 @@ async function main() {
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
   })
-
-  // Get Images
-  /*
-  app.post('/getProfilePhoto', jsonParser, async function (req, res) {
-    res.sendFile(__dirname + `/public/uploads/profilePhotos/${req.body.uid}.png`);
-  })
-  */
 
   // Delete Images
 

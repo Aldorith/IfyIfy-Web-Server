@@ -15,8 +15,9 @@ CREATE TABLE MEMBER (
 CREATE TABLE COMMUNITY (
 	CommunityID integer not null AUTO_INCREMENT,
 	CommunityName VARCHAR(30),
-	communityDesciption VARCHAR(250),
+	CommunityDescription VARCHAR(250),
 	LogoID integer,
+	HeaderID integer,
 	primaryColor VARCHAR(20),
 	secondaryColor VARCHAR(20),
 	communityJoinCode VARCHAR(7),
@@ -51,10 +52,8 @@ CREATE TABLE MESSAGE (
 
 CREATE TABLE IMAGE (
 	ImageID integer not null,
-	CommunityID integer not null,
-	ImageName VARCHAR(45),
-	CONSTRAINT Image_PK PRIMARY KEY (ImageID, CommunityID),
-	CONSTRAINT Image_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
+	ImagePath VARCHAR(1024),
+	CONSTRAINT Image_PK PRIMARY KEY (ImageID)) engine = innodb;
 
 CREATE TABLE TEXTBOX (
 	TextboxID integer not null,
@@ -89,11 +88,10 @@ INSERT INTO MEMBER VALUES
 	(3, 'Baconator', 'Connor', 'Bacon', 'Connor.Bacon@biola.edu', 114),
 	(4, 'Broderson', 'Brody', 'Schippa', 'brody.schippa@biola.edu', 113);
 
-
 INSERT INTO COMMUNITY VALUES
-	(1, 'Zion', 'X','011', 'Black', 'Purple', 'AGz2753'),
-	(2, 'Commuters', 'X','012', 'Brown', 'Beige', 'CommUtr'),
-	(3, 'Sigma', 'X','013', 'Green', 'Yellow', 'SigMerz');
+	(1, 'Zion', 'X','011', '0','Black', 'Purple', 'AGz2753'),
+	(2, 'Commuters', 'X','012', '0','Brown', 'Beige', 'CommUtr'),
+	(3, 'Sigma', 'X','013', '0', 'Green', 'Yellow', 'SigMerz');
 
 INSERT INTO USERCOMMUNITY VALUES
 	(1, 1, 1, 0),
