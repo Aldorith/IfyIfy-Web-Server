@@ -50,7 +50,8 @@ const profilePhotoStorage = multer.diskStorage({
     cb(null, ('public/uploads/profilePhotos/'));
   },
   filename: function(req, file, cb){
-    let fileName = req.body.uid + path.extname(file.originalname);
+    let fileName = req.body.uid + ".png";
+    //    let fileName = req.body.uid + path.extname(file.originalname);
     //Date.now() + path.extname(file.originalname)
     cb(null, fileName);
   }
