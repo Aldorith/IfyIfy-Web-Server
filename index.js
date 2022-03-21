@@ -223,6 +223,32 @@ async function main() {
     res.send(communityData);
   })
 
+  //Join Community
+  app.post('/userJoinCommunity', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let communityData;
+
+    // Make Query
+    try {
+      let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
+      communityData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Data Back\n");
+    res.send(communityData);
+  })
+
+
   // Chat
   app.post('/getMessageData', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
