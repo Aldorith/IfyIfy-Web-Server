@@ -235,7 +235,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
+      let sql = `INSERT into userCommunity (userID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}', (SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'), 0, 1); SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
       console.log(sql);
       communityData = await db.query(connection, sql);
     } catch (e) {
