@@ -231,12 +231,12 @@ async function main() {
     await db.connect(connection);
 
     // Setup Response Data
-    let communityData;
+    let communityID;
 
     // Make Query
     try {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
-      communityData = await db.query(connection, sql);
+      communityID = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
     } finally {
