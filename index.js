@@ -236,6 +236,7 @@ async function main() {
     // Make Query
     try {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
+      console.log(sql);
       communityData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -245,6 +246,7 @@ async function main() {
 
     // Send the data back
     console.log("Sending Data Back\n");
+    console.log(communityData);
     res.send(communityData);
   })
 
