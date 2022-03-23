@@ -231,7 +231,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}'`;
+      let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}';`;
       console.log(sql);
       communityData = await db.query(connection, sql);
       //---------------
@@ -250,7 +250,6 @@ async function main() {
     console.log(communityData);
     res.send(communityData);
   })
-
 
   // Chat
   app.post('/getMessageData', jsonParser, async function (req, res) {
