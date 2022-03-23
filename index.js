@@ -197,7 +197,7 @@ async function main() {
         // // TODO: Verify joinCode does not already exist
         // Connor B. can you do this
 
-        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}',null, null, null, '${communityJoinCode}')`;
+        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}', null, null, null, null, '${communityJoinCode}')`;
         db.query(connection, sql);
 
         // Get ID
