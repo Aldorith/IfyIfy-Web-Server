@@ -24,15 +24,11 @@ app.use('/profilePhotos', express.static('public/uploads/profilePhotos'));
 // Setup MySQL
 const mysql = require('mysql');
 const { makeDb } = require('mysql-async-simple');
+const { databaseConfig } = require('./dbConfig.js');
+
 
 function establishConnection () {
-  var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'ServerAdmin',
-    password : 'ifyify',
-    database : 'ifyify',
-    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-  });
+  let connection = mysql.createConnection(databaseConfig);
 
   return connection;
 }
