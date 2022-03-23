@@ -232,11 +232,10 @@ async function main() {
     // Make Query
     try {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}';`;
-      console.log(sql);
       communityData = await db.query(connection, sql);
       //---------------
       if(communityData.length !== 0) {
-        sql = `INSERT into userCommunity (userID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${communityData}', 0, 1);`;
+        sql = `INSERT into userCommunity (userID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${communityData[0].CommunityID}', 0, 1);`;
         db.query(connection, sql);
       }
     } catch (e) {
@@ -247,8 +246,7 @@ async function main() {
 
     // Send the data back
     console.log("Sending Data Back\n");
-    console.log(communityData);
-    res.send(communityData);
+    res.send(communityData[0].CommunityID);
   })
 
   // Chat
