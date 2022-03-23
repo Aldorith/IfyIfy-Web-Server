@@ -246,7 +246,7 @@ async function main() {
 
     // Send the data back
     console.log("Sending Data Back\n");
-    res.send(communityData[0].CommunityID);
+    res.send(communityData);
   })
 
   // Chat
