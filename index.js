@@ -234,11 +234,18 @@ async function main() {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}';`;
       communityData = await db.query(connection, sql);
       //---------------
-      let ID = communityData[0].CommunityID;
+      let commID = communityData[0].CommunityID;
 
-      if(communityData.length !== 0) {
-        sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${ID}', 0, 1);`;
+      sql = `SELECT userID from USERCOMMUNITY WHERE userID = '${req.body.uid}' and communityID = '${commID}';`;
+      currentUser = await db.query(connection, sql);
+
+      if(currentUser.length === 0) {
+        sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
         db.query(connection, sql);
+      }
+      else {
+        // Send the data back
+        console.log("User Already a part of the Community\n");
       }
     } catch (e) {
       console.log(e);
