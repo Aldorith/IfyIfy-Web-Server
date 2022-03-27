@@ -288,7 +288,7 @@ async function main() {
 
   // Create Calendar Event
   app.post('/createCalendarEvent', jsonParser, async function (req, res) {
-    console.log("\nAPI REQUEST RECEIVED");
+    console.log("\nCalendar Event Creation API REQUEST RECEIVED");
 
     // Establish Database Connection
     const connection = establishConnection();
@@ -299,12 +299,37 @@ async function main() {
         // Generate Unique CommunityID
     let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
     let calendarEventID = num.slice(3,10);
-        //still need to check if this will work
+        //this wont work, need to be an int, fix it later
 
     let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
     db.query(connection, sql);
 
     catch(e) {
+      console.log(e);
+    }
+    await db.close(connection);
+    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+  })
+
+  // Create Announcement
+  app.post('/createAnnoucement', jsonParser, async function (req, res) {
+    console.log("\nAnnouncment Creation API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Add Event
+    // Generate Unique CommunityID
+    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    let announcementID = num.slice(3,10);
+    //change to int
+
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
+    db.query(connection, sql);
+
+  catch(e) {
       console.log(e);
     }
     await db.close(connection);

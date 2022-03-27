@@ -65,6 +65,7 @@ CREATE TABLE TEXTBOX (
 CREATE TABLE ANNOUNCEMENT (
 	AnnouncementID integer not null,
 	CommunityID integer not null,
+	AnnouncementTitle VARCHAR(30),
 	AnnouncementText VARCHAR(200),
 	AnnouncementPinned TINYINT,
 	CONSTRAINT Announcement_PK PRIMARY KEY (AnnouncementID, CommunityID),
