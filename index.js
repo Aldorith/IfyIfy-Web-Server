@@ -296,14 +296,15 @@ async function main() {
     await db.connect(connection);
 
    // Add Event
-        // Generate Unique CommunityID
-    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-    let calendarEventID = num.slice(3,10);
-        //this wont work, need to be an int, fix it later
+    try {
+      // Generate Unique CommunityID
+      let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
+      let calendarEventID = num.slice(3, 10);
+      //this wont work, need to be an int, fix it later
 
-    let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
-    db.query(connection, sql);
-
+      let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+      db.query(connection, sql);
+    }
     catch(e) {
       console.log(e);
     }
@@ -319,16 +320,16 @@ async function main() {
     const connection = establishConnection();
     const db = makeDb();
     await db.connect(connection);
+    try {
+      // Add Event
+      // Generate Unique CommunityID
+      let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
+      let announcementID = num.slice(3, 10);
+      //change to int
 
-    // Add Event
-    // Generate Unique CommunityID
-    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-    let announcementID = num.slice(3,10);
-    //change to int
-
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
-    db.query(connection, sql);
-
+      let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
+      db.query(connection, sql);
+    }
   catch(e) {
       console.log(e);
     }
