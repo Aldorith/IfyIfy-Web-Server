@@ -286,13 +286,37 @@ async function main() {
     res.send(messageData);
   })
 
+  // Create Calendar Event
+  app.post('/createCalendarEvent', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+   // Add Event
+        // Generate Unique CommunityID
+    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    let calendarEventID = num.slice(3,10);
+        //still need to check if this will work
+
+    let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+    db.query(connection, sql);
+
+    catch(e) {
+      console.log(e);
+    }
+    await db.close(connection);
+    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+  })
+
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
   })
 
   // Delete Images
-
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
   })
