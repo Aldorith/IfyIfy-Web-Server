@@ -230,20 +230,21 @@ async function main() {
     let communityData;
 
     // Make Query
+    let currentUser;
     try {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}';`;
       communityData = await db.query(connection, sql);
+
       //---------------
       let commID = communityData[0].CommunityID;
 
       sql = `SELECT userID from USERCOMMUNITY WHERE userID = '${req.body.uid}' and communityID = '${commID}';`;
       currentUser = await db.query(connection, sql);
 
-      if(currentUser.length === 0) {
+      if (currentUser.length === 0) {
         sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
         db.query(connection, sql);
-      }
-      else {
+      } else {
         // Send the data back
         console.log("User Already a part of the Community\n");
       }
@@ -308,7 +309,7 @@ async function main() {
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
   })
 
-  // Create Announcement
+  // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
   app.post('/createAnnoucement', jsonParser, async function (req, res) {
     console.log("\nAnnouncment Creation API REQUEST RECEIVED");
 
