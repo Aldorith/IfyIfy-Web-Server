@@ -298,15 +298,17 @@ async function main() {
 
    // Add Event
         // Generate Unique CommunityID
-    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-    let calendarEventID = num.slice(3,10);
+    let num = Date.now().toString(10);
+    let calendarEventID = parseInt(num.substring(num.length-5, num.length));
         //this wont work, need to be an int, fix it later
 
-    let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+    let sql = `INSERT into EVENT VALUES (${calendarEventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
     db.query(connection, sql);
 
     await db.close(connection);
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+
+    console.log("\nCalendar Event Succesfully Created");
   })
 
   // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
@@ -319,16 +321,17 @@ async function main() {
     await db.connect(connection);
 
     // Add Event
-    // Generate Unique CommunityID
-    let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-    let announcementID = num.slice(3,10);
+    // Generate Unique announcementID
+    let num = Date.now().toString(2);
+    let announcementID = parseInt(num.substring(num.length-5, num.length));
     //change to int
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
     db.query(connection, sql);
 
     await db.close(connection);
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+    console.log("\nAnnouncement Succesfully Created");
   })
 
   // Upload Profile Image
