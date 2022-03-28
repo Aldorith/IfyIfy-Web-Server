@@ -304,9 +304,6 @@ async function main() {
     let sql = `INSERT into EVENT VALUES ('${req.body.calendarEventID}', '${req.body.communityID}' , '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
     db.query(connection, sql);
 
-    catch(e) {
-      console.log(e);
-    }
     await db.close(connection);
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
   })
@@ -329,9 +326,6 @@ async function main() {
     let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
     db.query(connection, sql);
 
-  catch(e) {
-      console.log(e);
-    }
     await db.close(connection);
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
   })
