@@ -316,7 +316,7 @@ async function main() {
       await db.close(connection);
     }
 
-    // Send the data back
+    // Let them know it made it!
     console.log("Message Sent Successfully!!\n");
   })
 
