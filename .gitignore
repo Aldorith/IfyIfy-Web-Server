@@ -1,3 +1,6 @@
+# Custom
+dbConfig.js
+
 # Logs
 logs
 *.log
@@ -108,3 +111,4 @@ dist
 /.idea/workspace.xml
 /uploads/
 /public/uploads/
+/dbConfig.js/
