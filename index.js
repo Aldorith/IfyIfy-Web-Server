@@ -230,21 +230,20 @@ async function main() {
     let communityData;
 
     // Make Query
-    let currentUser;
     try {
       let sql = `SELECT CommunityID from COMMUNITY WHERE communityJoinCode = '${req.body.communityJoinCode}';`;
       communityData = await db.query(connection, sql);
-
       //---------------
       let commID = communityData[0].CommunityID;
 
       sql = `SELECT userID from USERCOMMUNITY WHERE userID = '${req.body.uid}' and communityID = '${commID}';`;
       currentUser = await db.query(connection, sql);
 
-      if (currentUser.length === 0) {
+      if(currentUser.length === 0) {
         sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
         db.query(connection, sql);
-      } else {
+      }
+      else {
         // Send the data back
         console.log("User Already a part of the Community\n");
       }
@@ -273,7 +272,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commId}' and ChannelID = '${req.body.chanId}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      let sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
       messageData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -287,52 +286,40 @@ async function main() {
     res.send(messageData);
   })
 
-  // Create Calendar Event
-  app.post('/createCalendarEvent', jsonParser, async function (req, res) {
-    console.log("\nCalendar Event Creation API REQUEST RECEIVED");
+  app.post('/sendMessage', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
 
     // Establish Database Connection
     const connection = establishConnection();
     const db = makeDb();
     await db.connect(connection);
 
-   // Add Event
-        // Generate Unique CommunityID
-    let num = Date.now().toString(10);
-    let calendarEventID = parseInt(num.substring(num.length-5, num.length));
-        //this wont work, need to be an int, fix it later
+    // Setup Response Data
+    let isUnique;
+    let index = 0;
 
-    let sql = `INSERT into EVENT VALUES (${calendarEventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
-    db.query(connection, sql);
+    // Make Query
+    try {
+      let sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
+      isUnique = await db.query(connection, sql);
+      while(isUnique.length)
+      {
+        index += 1;
+        sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
+        isUnique = await db.query(connection, sql);
+      }
+      sql = `INSERT INTO MESSAGE VALUES ('${req.body.messageID+index}', '${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
+      db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
 
-    await db.close(connection);
-    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
-
-    console.log("\nCalendar Event Succesfully Created");
+    // Send the data back
+    console.log("Message Sent Successfully!!\n");
   })
 
-  // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
-  app.post('/createAnnoucement', jsonParser, async function (req, res) {
-    console.log("\nAnnouncment Creation API REQUEST RECEIVED");
-
-    // Establish Database Connection
-    const connection = establishConnection();
-    const db = makeDb();
-    await db.connect(connection);
-
-    // Add Event
-    // Generate Unique announcementID
-    let num = Date.now().toString(2);
-    let announcementID = parseInt(num.substring(num.length-5, num.length));
-    //change to int
-
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
-    db.query(connection, sql);
-
-    await db.close(connection);
-    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
-    console.log("\nAnnouncement Succesfully Created");
-  })
 
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
@@ -340,6 +327,7 @@ async function main() {
   })
 
   // Delete Images
+
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
   })
