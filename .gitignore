@@ -111,3 +111,4 @@ dist
 /.idea/workspace.xml
 /uploads/
 /public/uploads/
+/dbConfig.js/
