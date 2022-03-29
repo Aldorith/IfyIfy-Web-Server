@@ -259,6 +259,33 @@ async function main() {
   })
 
   // Chat
+  app.post('/getChannelData', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let channelData;
+
+    // Make Query
+    try {
+      let sql = `SELECT ChannelID, ChannelName from CHANNEL WHERE CommunityID = '${req.body.commID}'`;
+      channelData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log(channelData[0]);
+    console.log("Sending Data Back...\n");
+    res.send(channelData);
+  })
+
   app.post('/getMessageData', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
 
@@ -295,6 +322,7 @@ async function main() {
     await db.connect(connection);
 
     // Setup Response Data
+    let messageData;
     let isUnique;
     let index = 0;
 
@@ -310,6 +338,9 @@ async function main() {
       }
       sql = `INSERT INTO MESSAGE VALUES ('${req.body.messageID+index}', '${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
       db.query(connection, sql);
+
+      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE MessageID = '${req.body.messageID+index}' and CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      messageData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
     } finally {
@@ -318,6 +349,11 @@ async function main() {
 
     // Let them know it made it!
     console.log("Message Sent Successfully!!\n");
+
+    // Send the data back
+    console.log(messageData[0].UserName);
+    console.log("Sending Data Back\n");
+    res.send(messageData);
   })
 
 
