@@ -20,6 +20,7 @@ app.use(cors(corsOptions));
 
 // Setup route for profile photos
 app.use('/profilePhotos', express.static('public/uploads/profilePhotos'));
+app.use('/communityIcons', express.static('public/uploads/communityIcons'));
 
 // Setup MySQL
 const mysql = require('mysql');
@@ -55,9 +56,26 @@ const profilePhotoStorage = multer.diskStorage({
 
 const profilePhotoUpload = multer({ storage: profilePhotoStorage });
 
-// Will Sort this out later
-// let images = require('./features/images')(app);
+const communityIconStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // First Create correct folder if correct folder does not exist
+    let dir = './public/uploads/communityIcons/';
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
 
+    // Set File Directory
+    cb(null, ('public/uploads/communityIcons/'));
+  },
+  filename: function(req, file, cb){
+    let fileName = req.body.cID + ".png";
+    //    let fileName = req.body.uid + path.extname(file.originalname);
+    //Date.now() + path.extname(file.originalname)
+    cb(null, fileName);
+  }
+});
+
+const communityIconUpload = multer({ storage: communityIconStorage });
 
 // We will organize this better next sprint
 async function main() {
@@ -207,12 +225,19 @@ async function main() {
 
         sql = `INSERT into USERCOMMUNITY VALUES ('${req.body.uid}','${communityData[0].CommunityID}', true, 3)`;
         db.query(connection, sql);
+
+        // Assign Default Community Icon
+        fs.copyFile('defaultCommunityIcon.png', communityData[0].CommunityID+'.png', (err) => {
+          if (err) throw err;
+          console.log('Default Community Icon Copied');
+        });
       }
     } catch (e) {
       console.log(e);
     } finally {
       await db.close(connection);
     }
+
 
     // Send the data back
     console.log("Sending Data Back\n");
@@ -362,7 +387,8 @@ async function main() {
     console.log("Photo Uploaded by " + req.body.uid);
   })
 
-  // Delete Images
+
+  // Upload Community Icon
 
   app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
