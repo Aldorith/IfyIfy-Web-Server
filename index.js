@@ -414,9 +414,9 @@ async function main() {
     const db = makeDb();
     await db.connect(connection);
 
-    let sql = `DELETE FROM EVENT WHERE EventID = ${req.body.eventID};')`;
+    let sql = `DELETE FROM EVENT WHERE EventID = (${req.body.eventID});`;
     db.query(connection, sql);
-  }
+  })
 
   //Edit Calendar Event
 
@@ -431,11 +431,11 @@ async function main() {
     let sql = `DELETE FROM Event WHERE EventID = '${req.body.EventID}'`;
     db.query(connection, sql);
 
-    let sql = `INSERT into EVENT VALUES (${req.body.eventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+    sql = `INSERT into EVENT VALUES (${req.body.eventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
     db.query(connection, sql);
 
     await db.close(connection);
-  }
+  })
 
   // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
   app.post('/createAnnouncement', jsonParser, async function (req, res) {
@@ -473,7 +473,7 @@ async function main() {
     db.query(connection, sql);
 
     await db.close(connection);
-  }
+  })
   
   //Edit Announcement
   app.post('/editAnnouncement', jsonParser, async function (req, res) {
@@ -487,11 +487,11 @@ async function main() {
     let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}'`;
     db.query(connection, sql);
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+    sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
     db.query(connection, sql);
     
     await db.close(connection);
-  }
+  })
    
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
