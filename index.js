@@ -451,7 +451,7 @@ async function main() {
     let announcementID = parseInt(num.substring(num.length-5, num.length));
     //change to int
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+    let sql = `INSERT into ANNOUNCEMENT VALUES (${announcementID}, ${req.body.communityID} , '${req.body.announcementTitle}' , '${req.body.announcementContents}', 1)`;
     db.query(connection, sql);
 
     await db.close(connection);
