@@ -308,7 +308,7 @@ async function main() {
     }
 
     // Send the data back
-    console.log(messageData[0].UserName);
+    console.log(messageData[0]);
     console.log("Sending Data Back\n");
     res.send(messageData);
   })
