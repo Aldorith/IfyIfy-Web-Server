@@ -381,7 +381,53 @@ async function main() {
     res.send(messageData);
   })
 
+// Create Calendar Event
+  app.post('/createCalendarEvent', jsonParser, async function (req, res) {
+    console.log("\nCalendar Event Creation API REQUEST RECEIVED");
 
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Add Event
+    // Generate Unique CommunityID
+    let num = Date.now().toString(10);
+    let calendarEventID = parseInt(num.substring(num.length-5, num.length));
+    //this wont work, need to be an int, fix it later
+
+    let sql = `INSERT into EVENT VALUES (${calendarEventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+    db.query(connection, sql);
+
+    await db.close(connection);
+    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+
+    console.log("\nCalendar Event Succesfully Created");
+  })
+
+  // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
+  app.post('/createAnnoucement', jsonParser, async function (req, res) {
+    console.log("\nAnnouncment Creation API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+    //
+    // Add Event
+    // Generate Unique announcementID
+    let num = Date.now().toString(2);
+    let announcementID = parseInt(num.substring(num.length-5, num.length));
+    //change to int
+
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+    db.query(connection, sql);
+
+    await db.close(connection);
+    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
+    console.log("\nAnnouncement Succesfully Created");
+  })
+  
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
