@@ -404,10 +404,42 @@ async function main() {
 
     console.log("\nCalendar Event Succesfully Created");
   })
+    
+  // Delete Calendar Event
+  app.post('/deleteCalendarEvent', jsonParser, async function (req, res) {
+    console.log("\nDelete Calendar Event API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    let sql = `DELETE FROM EVENT WHERE EventID = ${req.body.eventID};')`;
+    db.query(connection, sql);
+  }
+
+  //Edit Calendar Event
+
+  app.post('/editCalendarEvent', jsonParser, async function (req, res) {
+    console.log("\nEdit Calender Event API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    let sql = `DELETE FROM Event WHERE EventID = '${req.body.EventID}'`;
+    db.query(connection, sql);
+
+    let sql = `INSERT into EVENT VALUES (${req.body.eventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
+    db.query(connection, sql);
+
+    await db.close(connection);
+  }
 
   // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
-  app.post('/createAnnoucement', jsonParser, async function (req, res) {
-    console.log("\nAnnouncment Creation API REQUEST RECEIVED");
+  app.post('/createAnnouncement', jsonParser, async function (req, res) {
+    console.log("\nAnnouncement Creation API REQUEST RECEIVED");
 
     // Establish Database Connection
     const connection = establishConnection();
@@ -420,19 +452,53 @@ async function main() {
     let announcementID = parseInt(num.substring(num.length-5, num.length));
     //change to int
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
     db.query(connection, sql);
 
     await db.close(connection);
     //this might be incorrect, so chcek this. Maybe I can just close the database like normal
     console.log("\nAnnouncement Succesfully Created");
   })
+
+  //Delete Announcement
+  app.post('/deleteAnnouncement', jsonParser, async function (req, res) {
+    console.log("\nDelete Announcement API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}'`;
+    db.query(connection, sql);
+
+    await db.close(connection);
+  }
   
+  //Edit Announcement
+  app.post('/editAnnouncement', jsonParser, async function (req, res) {
+    console.log("\nEdit Announcement API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}'`;
+    db.query(connection, sql);
+
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+    db.query(connection, sql);
+    
+    await db.close(connection);
+  }
+   
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
   })
 
+ 
 
   // Upload Community Icon
 
