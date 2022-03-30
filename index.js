@@ -381,7 +381,7 @@ async function main() {
     res.send(messageData);
   })
 
-// Create Calendar Event
+  // Create Calendar Event
   app.post('/createCalendarEvent', jsonParser, async function (req, res) {
     console.log("\nCalendar Event Creation API REQUEST RECEIVED");
 
@@ -418,8 +418,7 @@ async function main() {
     db.query(connection, sql);
   })
 
-  //Edit Calendar Event
-
+  // Edit Calendar Event
   app.post('/editCalendarEvent', jsonParser, async function (req, res) {
     console.log("\nEdit Calender Event API REQUEST RECEIVED");
 
@@ -437,7 +436,7 @@ async function main() {
     await db.close(connection);
   })
 
-  // Create Announcement - There is a spelling error in /createAnnouncement, I don't want to break it, but if you have time you should fix it
+  // Create Announcement
   app.post('/createAnnouncement', jsonParser, async function (req, res) {
     console.log("\nAnnouncement Creation API REQUEST RECEIVED");
 
