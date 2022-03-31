@@ -22,6 +22,21 @@ app.use(cors(corsOptions));
 app.use('/profilePhotos', express.static('public/uploads/profilePhotos'));
 app.use('/communityIcons', express.static('public/uploads/communityIcons'));
 
+//Server Stuff
+const httpServer = require('http').createServer(app);
+const options = {
+  'pingInterval':2000,
+}
+const io = require('socket.io')(httpServer.options);
+
+io.on("connection", (socket) => {
+  console.log(socket.id);
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`)
+})
+
 // Setup MySQL
 const mysql = require('mysql');
 const { makeDb } = require('mysql-async-simple');
@@ -79,6 +94,12 @@ const communityIconUpload = multer({ storage: communityIconStorage });
 
 // We will organize this better next sprint
 async function main() {
+
+  //Establish connection for broadcasting messages:
+  app.on('connection', socket => {
+    console.log('Some client connected')
+  })
+
   // Get User Data
   app.post('/getUserData', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
@@ -111,9 +132,9 @@ async function main() {
 
       }
     } catch (e) {
-        console.log(e);
+      console.log(e);
     } finally {
-        await db.close(connection);
+      await db.close(connection);
     }
 
     // Send the data back
@@ -203,14 +224,12 @@ async function main() {
         */
         let sendBack = {statusCode: 900};
         res.send(sendBack);
-      }
-      else
-      {
+      } else {
         console.log("Adding Community to Database");
 
         // Generate Unique CommunityID
         let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-        let communityJoinCode = num.slice(3,10);
+        let communityJoinCode = num.slice(3, 10);
 
         // // TODO: Verify joinCode does not already exist
         // Connor B. can you do this
@@ -227,7 +246,7 @@ async function main() {
         db.query(connection, sql);
 
         // Assign Default Community Icon
-        fs.copyFile('defaultCommunityIcon.png', communityData[0].CommunityID+'.png', (err) => {
+        fs.copyFile('defaultCommunityIcon.png', communityData[0].CommunityID + '.png', (err) => {
           if (err) throw err;
           console.log('Default Community Icon Copied');
         });
@@ -264,11 +283,10 @@ async function main() {
       sql = `SELECT userID from USERCOMMUNITY WHERE userID = '${req.body.uid}' and communityID = '${commID}';`;
       currentUser = await db.query(connection, sql);
 
-      if(currentUser.length === 0) {
+      if (currentUser.length === 0) {
         sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
         db.query(connection, sql);
-      }
-      else {
+      } else {
         // Send the data back
         console.log("User Already a part of the Community\n");
       }
@@ -355,8 +373,7 @@ async function main() {
     try {
       let sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
       isUnique = await db.query(connection, sql);
-      while(isUnique.length)
-      {
+      while (isUnique.length) {
         index += 1;
         sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
         isUnique = await db.query(connection, sql);
@@ -364,7 +381,7 @@ async function main() {
       sql = `INSERT INTO MESSAGE VALUES ('${req.body.messageID+index}', '${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
       db.query(connection, sql);
 
-      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE MessageID = '${req.body.messageID+index}' and CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
       messageData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -376,7 +393,7 @@ async function main() {
     console.log("Message Sent Successfully!!\n");
 
     // Send the data back
-    console.log(messageData[0].UserName);
+    console.log(messageData[0]);
     console.log("Sending Data Back\n");
     res.send(messageData);
   })
@@ -393,7 +410,7 @@ async function main() {
     // Add Event
     // Generate Unique CommunityID
     let num = Date.now().toString(10);
-    let calendarEventID = parseInt(num.substring(num.length-5, num.length));
+    let calendarEventID = parseInt(num.substring(num.length - 5, num.length));
     //this wont work, need to be an int, fix it later
 
     let sql = `INSERT into EVENT VALUES (${calendarEventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
@@ -404,7 +421,7 @@ async function main() {
 
     console.log("\nCalendar Event Succesfully Created");
   })
-    
+
   // Delete Calendar Event
   app.post('/deleteCalendarEvent', jsonParser, async function (req, res) {
     console.log("\nDelete Calendar Event API REQUEST RECEIVED");
@@ -448,10 +465,10 @@ async function main() {
     // Add Event
     // Generate Unique announcementID
     let num = Date.now().toString(2);
-    let announcementID = parseInt(num.substring(num.length-5, num.length));
+    let announcementID = parseInt(num.substring(num.length - 5, num.length));
     //change to int
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES (${announcementID}, ${req.body.communityID} , '${req.body.announcementTitle}' , '${req.body.announcementContents}', 1)`;
+    let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
     db.query(connection, sql);
 
     await db.close(connection);
@@ -473,7 +490,7 @@ async function main() {
 
     await db.close(connection);
   })
-  
+
   //Edit Announcement
   app.post('/editAnnouncement', jsonParser, async function (req, res) {
     console.log("\nEdit Announcement API REQUEST RECEIVED");
@@ -488,22 +505,17 @@ async function main() {
 
     sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
     db.query(connection, sql);
-    
+
     await db.close(connection);
   })
-   
+
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
   })
 
- 
 
   // Upload Community Icon
-
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
-  })
 }
 
 main();
