@@ -408,18 +408,24 @@ async function main() {
     await db.connect(connection);
 
     // Add Event
-    // Generate Unique CommunityID
-    let num = Date.now().toString(10);
-    let calendarEventID = parseInt(num.substring(num.length - 5, num.length));
-    //this wont work, need to be an int, fix it later
+    // Generate Unique announcementID
+    let num = Date.now().toString(2);
+    let eventID = parseInt(num.substring(num.length-5, num.length));
 
-    let sql = `INSERT into EVENT VALUES (${calendarEventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
-    db.query(connection, sql);
+    // store announcement data
+    let eventData;
 
-    await db.close(connection);
-    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
-
-    console.log("\nCalendar Event Succesfully Created");
+    // make query
+    try {
+      let sql = `INSERT into EVENT VALUES ('${eventID}', '${req.body.communityID}' , '${req.body.eventTitle}' , '${req.body.eventDescription}', '${req.body.eventDateTime}', '${req.body.eventLocation}')`;
+      eventData = await db.query(connection, sql);
+    }  catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+    console.log("Sending Data Back\n");
+    res.send(eventData);
   })
 
   // Delete Calendar Event
