@@ -16,6 +16,7 @@ CREATE TABLE COMMUNITY (
 	CommunityID integer not null AUTO_INCREMENT,
 	CommunityName VARCHAR(30),
 	CommunityDescription VARCHAR(250),
+	CommunityRules VARCHAR(250),
 	LogoID integer,
 	HeaderID integer,
 	primaryColor VARCHAR(20),
