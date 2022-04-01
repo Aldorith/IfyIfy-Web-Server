@@ -461,19 +461,29 @@ async function main() {
     const connection = establishConnection();
     const db = makeDb();
     await db.connect(connection);
-    //
+
     // Add Event
     // Generate Unique announcementID
     let num = Date.now().toString(2);
-    let announcementID = parseInt(num.substring(num.length - 5, num.length));
-    //change to int
+    let announcementID = parseInt(num.substring(num.length-5, num.length));
 
-    let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
-    db.query(connection, sql);
+    // set announcement to not pinned by default
+    let announcementPinned = 0;
 
-    await db.close(connection);
-    //this might be incorrect, so chcek this. Maybe I can just close the database like normal
-    console.log("\nAnnouncement Succesfully Created");
+    // store announcement data
+    let announcementData;
+
+    // make query
+    try {
+      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}', '${announcementPinned}')`;
+      announcementData = await db.query(connection, sql);
+    }  catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+    console.log("Sending Data Back\n");
+    res.send(announcementData);
   })
 
   //Delete Announcement
