@@ -398,6 +398,78 @@ async function main() {
     res.send(messageData);
   })
 
+  //Add New Channel
+  app.post('/addChannel', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let channelData;
+    let uniqueID;
+    let index = 0;
+
+    // Make Query
+    try {
+      let sql = `SELECT ChannelID from CHANNEL where ChannelID = '${index}' and CommunityID = '${req.body.commID}';`;
+      uniqueID = await db.query(connection, sql);
+      while (uniqueID.length) {
+        index += 1;
+        sql = `SELECT ChannelID from CHANNEL where ChannelID = '${index}' and CommunityID = '${req.body.commID}';`;
+        uniqueID = await db.query(connection, sql);
+      }
+      sql = `INSERT INTO CHANNEL VALUES ('${index}','${req.body.commID}','${req.body.channelName}');`;
+      await db.query(connection, sql);
+      //---------------
+
+      sql = `SELECT ChannelID, ChannelName from CHANNEL WHERE CommunityID = '${req.body.commID}';`;
+      channelData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Channel Data Back\n");
+    res.send(channelData);
+  })
+
+  //Delete a Channel
+  app.post('/deleteChannel', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let channelData;
+
+    // Make Query
+    try {
+      let sql = `DELETE from MESSAGE where CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}';`;
+      await db.query(connection, sql);
+
+      console.log("Channel Messages Deleted Successfully")
+
+      sql = `DELETE from CHANNEL where CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}';`;
+      await db.query(connection, sql);
+      console.log("Channel Deleted Successfully")
+
+      sql = `SELECT ChannelID, ChannelName from CHANNEL WHERE CommunityID = '${req.body.commID}'`;
+      channelData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log("Sending Data Back\n");
+    res.send(channelData);
+  })
+
   // Create Calendar Event
   app.post('/createCalendarEvent', jsonParser, async function (req, res) {
     console.log("\nCalendar Event Creation API REQUEST RECEIVED");
