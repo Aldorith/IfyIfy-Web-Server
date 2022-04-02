@@ -356,6 +356,7 @@ async function main() {
     res.send(messageData);
   })
 
+  //Send Message
   app.post('/sendMessage', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED");
 
@@ -457,6 +458,34 @@ async function main() {
     db.query(connection, sql);
 
     await db.close(connection);
+  })
+
+  //LoadCalendar
+  app.post('/loadCalendar', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let calendarData;
+
+    // Make Query
+    try {
+      let sql = `SELECT EventID, CommunityID, EventTitle, EventDescription, EventDateTime, EventLocation from Event, WHERE CommunityID = '${req.body.commID}'`;
+      calendarData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log(calendarData[0]);
+    console.log("Sending Data Back\n");
+    res.send(calendarData);
   })
 
   // Create Announcement
