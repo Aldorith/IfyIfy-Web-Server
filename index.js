@@ -474,7 +474,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT EventID, CommunityID, EventTitle, EventDescription, EventDateTime, EventLocation from Event, MEMBER WHERE CommunityID = '${req.body.communityID}'`;
+      let sql = `SELECT EventID, CommunityID, EventTitle, EventDescription, EventDateTime, EventLocation from Event WHERE CommunityID = '${req.body.communityID}'`;
       calendarData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
