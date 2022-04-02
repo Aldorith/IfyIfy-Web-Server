@@ -91,9 +91,9 @@ INSERT INTO MEMBER VALUES
 	(4, 'Broderson', 'Brody', 'Schippa', 'brody.schippa@biola.edu', 113);
 
 INSERT INTO COMMUNITY VALUES
-	(1, 'Zion', 'X','011', '0','Black', 'Purple', 'AGz2753'),
-	(2, 'Commuters', 'X','012', '0','Brown', 'Beige', 'CommUtr'),
-	(3, 'Sigma', 'X','013', '0', 'Green', 'Yellow', 'SigMerz');
+	(1, 'Zion', 'X','Rule', '011', '0','Black', 'Purple', 'AGz2753'),
+	(2, 'Commuters', 'X','Rule','012', '0','Brown', 'Beige', 'CommUtr'),
+	(3, 'Sigma', 'X','Rule','013', '0', 'Green', 'Yellow', 'SigMerz');
 
 INSERT INTO USERCOMMUNITY VALUES
 	(1, 1, 1, 0),
