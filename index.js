@@ -546,7 +546,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT EventID, CommunityID, EventTitle, EventDescription, EventDateTime, EventLocation from Event WHERE CommunityID = '${req.body.communityID}'`;
+      let sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.communityID}'`;
       calendarData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -624,6 +624,34 @@ async function main() {
     db.query(connection, sql);
 
     await db.close(connection);
+  })
+
+  //LoadAnnouncement
+  app.post('/loadAnnouncement', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let announcementData;
+
+    // Make Query
+    try {
+      let sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM Announcement WHERE CommunityID = '${req.body.communityID}'`;
+      announcementData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log(announcementData[0]);
+    console.log("Sending Data Back\n");
+    res.send(announcementData);
   })
 
   // Upload Profile Image
