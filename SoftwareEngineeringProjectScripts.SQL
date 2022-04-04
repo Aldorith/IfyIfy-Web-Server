@@ -68,7 +68,6 @@ CREATE TABLE ANNOUNCEMENT (
 	CommunityID integer not null,
 	AnnouncementTitle VARCHAR(30),
 	AnnouncementText VARCHAR(200),
-	CurrentDate Date,
 	CONSTRAINT Announcement_PK PRIMARY KEY (AnnouncementID, CommunityID),
 	CONSTRAINT Announcement_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
 

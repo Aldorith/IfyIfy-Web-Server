@@ -582,7 +582,7 @@ async function main() {
 
     // make query
     try {
-      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}', '${announcementPinned}')`;
+      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}', '${req.body.announcementTitle}' , '${req.body.announcementContents}', '${announcementPinned}')`;
       announcementData = await db.query(connection, sql);
     }  catch (e) {
       console.log(e);
