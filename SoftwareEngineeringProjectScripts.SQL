@@ -38,7 +38,7 @@ CREATE TABLE CHANNEL (
 	CommunityID integer not null,
 	ChannelName VARCHAR(20),
 	CONSTRAINT Channel_PK PRIMARY KEY (ChannelID, CommunityID),
-	CONSTRAINT Channel_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
+	CONSTRAINT Channel_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE) engine = innodb;
 
 CREATE TABLE MESSAGE (
 	MessageID integer not null,
@@ -49,7 +49,7 @@ CREATE TABLE MESSAGE (
 	MessageDateTime TIMESTAMP,
 	CONSTRAINT Message_PK PRIMARY KEY (MessageID, ChannelID, CommunityID),
 	CONSTRAINT Message_FK1 FOREIGN KEY (ChannelID) references CHANNEL(ChannelID),
-	CONSTRAINT Message_FK2 FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
+	CONSTRAINT Message_FK2 FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE) engine = innodb;
 
 CREATE TABLE IMAGE (
 	ImageID integer not null,
