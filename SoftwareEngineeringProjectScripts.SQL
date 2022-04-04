@@ -15,8 +15,8 @@ CREATE TABLE MEMBER (
 CREATE TABLE COMMUNITY (
 	CommunityID integer not null AUTO_INCREMENT,
 	CommunityName VARCHAR(30),
-	CommunityDescription VARCHAR(250),
-	CommunityRules VARCHAR(250),
+	CommunityDescription VARCHAR(500),
+	CommunityRules VARCHAR(1000),
 	LogoID integer,
 	HeaderID integer,
 	primaryColor VARCHAR(20),
@@ -49,7 +49,7 @@ CREATE TABLE MESSAGE (
 	MessageDateTime TIMESTAMP,
 	CONSTRAINT Message_PK PRIMARY KEY (MessageID, ChannelID, CommunityID),
 	CONSTRAINT Message_FK1 FOREIGN KEY (ChannelID) references CHANNEL(ChannelID),
-	CONSTRAINT Message_FK2 FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE) engine = innodb;
+	CONSTRAINT Message_FK2 FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE);
 
 CREATE TABLE IMAGE (
 	ImageID integer not null,
