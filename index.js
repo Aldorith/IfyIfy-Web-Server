@@ -655,6 +655,35 @@ async function main() {
     res.send(announcementData);
   })
 
+  //addUserToDirectory
+  app.post('/addUserToDirectory', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED TO ADD TO DIRECTORY");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Make Query
+    try {
+      `INSERT into DIRECTORY VALUES ('${req.body.CommunityID}', '${req.body.UserID}'`
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    console.log("Succesfully Added User to Directory");
+  })
+  
+  //removeUserFromDirectory
+  
+  //loadUserGeneral
+  
+  //loadUserAdmin
+  
+  //loadUserBanned
+  
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);

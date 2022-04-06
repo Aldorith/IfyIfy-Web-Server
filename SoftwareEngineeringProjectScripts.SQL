@@ -1,3 +1,4 @@
+DROP SCHEMA ifyify;
 CREATE SCHEMA ifyify;
 
 use ifyify;
@@ -23,6 +24,11 @@ CREATE TABLE COMMUNITY (
 	secondaryColor VARCHAR(20),
 	communityJoinCode VARCHAR(7),
 	CONSTRAINT Community_PK PRIMARY KEY(CommunityID)) engine = innodb;
+
+CREATE TABLE DIRECTORY (
+    CommunityID integer not null,
+    UserID integer not null,
+    CONSTRAINT DIRECTORY_PK PRIMARY KEY(CommunityID)) engine = innodb;
 
 CREATE TABLE USERCOMMUNITY (
 	UserID VARCHAR(128) not null,
