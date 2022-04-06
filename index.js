@@ -575,14 +575,15 @@ async function main() {
     let announcementID = parseInt(num.substring(num.length-5, num.length));
 
     // set announcement to not pinned by default
-    let announcementPinned = 0;
+    const current = new Date();
+    const date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
 
     // store announcement data
     let announcementData;
 
     // make query
     try {
-      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}', '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
+      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}', '${req.body.announcementTitle}' , '${req.body.announcementContents}', '${date}')`;
       announcementData = await db.query(connection, sql);
     }  catch (e) {
       console.log(e);
