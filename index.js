@@ -594,6 +594,31 @@ async function main() {
     res.send(announcementData);
   })
 
+  // Create Announcement
+  app.post('/updateCommunity', jsonParser, async function (req, res) {
+    console.log("\nCommunity Updaate API REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // store announcement data
+    let communityData;
+
+    // make query
+    try {
+      let sql = `UPDATE COMMUNITY SET CommunityName = '${req.body.communityName}', CommunityDescription='${req.body.communityDesc}', CommunityRules='${req.body.communityRules}' WHERE CommunityID='${req.body.communityID}'`;
+      announcementData = await db.query(connection, sql);
+    }  catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+    console.log("Sending Data Back\n");
+    res.send(announcementData);
+  })
+
   //Delete Announcement
   app.post('/deleteAnnouncement', jsonParser, async function (req, res) {
     console.log("\nDelete Announcement API REQUEST RECEIVED");
