@@ -144,6 +144,12 @@ async function main() {
         let sql = `INSERT into MEMBER VALUES ('${req.body.uid}', '${req.body.username}', '${req.body.firstName}', '${req.body.lastName}', '${req.body.email}', null)`;
         db.query(connection, sql);
 
+        // Setup Default Profile Photo
+        fs.copyFile('defaultProfilePhoto.png', req.body.uid + '.png', (err) => {
+          if (err) throw err;
+          console.log('Default Profile Photo Copied');
+        });
+
         // Now Re-query the Database (This might be unnecessary as I think about it, but it keeps everything uniform at least, we may remove later)
         sql = `SELECT * from MEMBER WHERE UserID = '${req.body.uid}'`;
         userData = await db.query(connection, sql);
@@ -271,6 +277,12 @@ async function main() {
         fs.copyFile('defaultCommunityIcon.png', communityData[0].CommunityID + '.png', (err) => {
           if (err) throw err;
           console.log('Default Community Icon Copied');
+        });
+
+        // Assign Default Community Header
+        fs.copyFile('defaultHeader.png', communityData[0].CommunityID + '.png', (err) => {
+          if (err) throw err;
+          console.log('Default Community Header Copied');
         });
       }
     } catch (e) {

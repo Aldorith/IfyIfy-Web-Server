@@ -18,10 +18,6 @@ CREATE TABLE COMMUNITY (
 	CommunityName VARCHAR(30),
 	CommunityDescription VARCHAR(500),
 	CommunityRules VARCHAR(1000),
-	LogoID integer,
-	HeaderID integer,
-	primaryColor VARCHAR(20),
-	secondaryColor VARCHAR(20),
 	communityJoinCode VARCHAR(7),
 	CONSTRAINT Community_PK PRIMARY KEY(CommunityID)) engine = innodb;
 
@@ -89,23 +85,10 @@ CREATE TABLE EVENT (
 	CONSTRAINT Event_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
 
 /*Inserting Test Data*/
-
-INSERT INTO MEMBER VALUES
-	(1, 'KyleMeister', 'Kyle', 'McCotter', 'kyle.McCotter@biola.edu', 111),
-	(2, 'MuraneMan', 'Connor', 'Murane', 'Connor.Murrane@biola.edu', 112),
-	(3, 'Baconator', 'Connor', 'Bacon', 'Connor.Bacon@biola.edu', 114),
-	(4, 'Broderson', 'Brody', 'Schippa', 'brody.schippa@biola.edu', 113);
-
 INSERT INTO COMMUNITY VALUES
-	(1, 'Zion', 'X','Rule', '011', '0','Black', 'Purple', 'AGz2753'),
-	(2, 'Commuters', 'X','Rule','012', '0','Brown', 'Beige', 'CommUtr'),
-	(3, 'Sigma', 'X','Rule','013', '0', 'Green', 'Yellow', 'SigMerz');
-
-INSERT INTO USERCOMMUNITY VALUES
-	(1, 1, 1, 0),
-	(2, 2, 1, 0),
-	(3, 3, 1, 0),
-	(4, 1, 0, 0);
+	(1, 'Zion', 'X','Rules', 'AGz2753'),
+	(2, 'Commuters', 'X','Rules', 'CommUtr'),
+	(3, 'Sigma', 'X','Rule', 'SigMerz');
 
 INSERT INTO CHANNEL VALUES
 	(1, 1, 'General'),
@@ -116,15 +99,11 @@ INSERT INTO CHANNEL VALUES
 	(1, 3, 'General'),
 	(2, 3, 'BecauseConnorsaidso');
 
-INSERT INTO MESSAGE VALUES
-	(1, 1, 1, 1, 'Welcome to the general chat for our community', '2022-02-11 00:00:01'),
-	(2, 1, 1, 4, 'Thanks @Kyle!', '2022-02-12 00:00:03'),
-	(1, 1, 2, 1, 'If your email ends in Biola.edu, you can join biola.edu communities...', '2022-02-14 00:03:01'),
-	(1, 2, 1, 2, 'Hello Commuters! My name is Connor! Welcome to this chat!', '2022-02-16 00:04:01'),
-	(1, 2, 3, 3, 'Yo', '2022-02-13 00:00:00');
 
+/*
 CREATE USER 'ServerAdmin'@'localhost' IDENTIFIED BY 'ifyify';
 
 GRANT INSERT, DELETE, SELECT, UPDATE ON ifyify . * TO 'ServerAdmin'@'localhost';
 
 FLUSH PRIVILEGES;
+*/
