@@ -21,6 +21,7 @@ app.use(cors(corsOptions));
 // Setup route for profile photos
 app.use('/profilePhotos', express.static('public/uploads/profilePhotos'));
 app.use('/communityIcons', express.static('public/uploads/communityIcons'));
+app.use('/communityHeaders', express.static('public/uploads/communityHeaders'));
 
 //Server Stuff
 const httpServer = require('http').createServer(app);
@@ -83,7 +84,7 @@ const communityIconStorage = multer.diskStorage({
     cb(null, ('public/uploads/communityIcons/'));
   },
   filename: function(req, file, cb){
-    let fileName = req.body.cID + ".png";
+    let fileName = req.body.CommunityID + ".png";
     //    let fileName = req.body.uid + path.extname(file.originalname);
     //Date.now() + path.extname(file.originalname)
     cb(null, fileName);
@@ -91,6 +92,27 @@ const communityIconStorage = multer.diskStorage({
 });
 
 const communityIconUpload = multer({ storage: communityIconStorage });
+
+const communityHeaderStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // First Create correct folder if correct folder does not exist
+    let dir = './public/uploads/communityHeaders/';
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+
+    // Set File Directory
+    cb(null, ('public/uploads/communityHeaders/'));
+  },
+  filename: function(req, file, cb){
+    let fileName = req.body.CommunityID + ".png";
+    //    let fileName = req.body.uid + path.extname(file.originalname);
+    //Date.now() + path.extname(file.originalname)
+    cb(null, fileName);
+  }
+});
+
+const communityHeaderUpload = multer({ storage: communityHeaderStorage });
 
 // We will organize this better next sprint
 async function main() {
@@ -596,7 +618,7 @@ async function main() {
 
   // Create Announcement
   app.post('/updateCommunity', jsonParser, async function (req, res) {
-    console.log("\nCommunity Updaate API REQUEST RECEIVED");
+    console.log("\nCommunity Update API REQUEST RECEIVED");
 
     // Establish Database Connection
     const connection = establishConnection();
@@ -609,14 +631,15 @@ async function main() {
     // make query
     try {
       let sql = `UPDATE COMMUNITY SET CommunityName = '${req.body.communityName}', CommunityDescription='${req.body.communityDesc}', CommunityRules='${req.body.communityRules}' WHERE CommunityID='${req.body.communityID}'`;
-      announcementData = await db.query(connection, sql);
+      communityData = await db.query(connection, sql);
     }  catch (e) {
       console.log(e);
     } finally {
       await db.close(connection);
     }
-    console.log("Sending Data Back\n");
-    res.send(announcementData);
+
+
+    res.send(communityData);
   })
 
   //Delete Announcement
@@ -712,10 +735,18 @@ async function main() {
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
-  })
-
+  });
 
   // Upload Community Icon
+  app.post('/uploadCommunityIcon', communityIconUpload.single('communityIcon'), function (req, res, next) {
+    console.log("Updated Icon for " + req.body.CommunityID);
+  });
+
+  // Upload Community Header
+  app.post('/uploadCommunityHeader', communityHeaderUpload.single('communityHeader'), function (req, res, next) {
+    console.log("Updated Header for " + req.body.CommunityID);
+  });
+
 }
 
 main();
