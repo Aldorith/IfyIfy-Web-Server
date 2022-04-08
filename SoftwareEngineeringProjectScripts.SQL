@@ -26,8 +26,9 @@ CREATE TABLE COMMUNITY (
 	CONSTRAINT Community_PK PRIMARY KEY(CommunityID)) engine = innodb;
 
 CREATE TABLE DIRECTORY (
-    CommunityID integer not null,
-    UserID integer not null,
+    CommunityID varchar(35)
+     not null,
+    UserID varchar(35) not null,
     CONSTRAINT DIRECTORY_PK PRIMARY KEY(CommunityID)) engine = innodb;
 
 CREATE TABLE USERCOMMUNITY (

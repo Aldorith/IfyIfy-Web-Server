@@ -616,7 +616,7 @@ async function main() {
     res.send(announcementData);
   })
 
-  // Create Announcement
+  // Update Community
   app.post('/updateCommunity', jsonParser, async function (req, res) {
     console.log("\nCommunity Update API REQUEST RECEIVED");
 
@@ -703,9 +703,9 @@ async function main() {
     res.send(announcementData);
   })
 
-  //addUserToDirectory
-  app.post('/addUserToDirectory', jsonParser, async function (req, res) {
-    console.log("\nAPI REQUEST RECEIVED TO ADD TO DIRECTORY");
+  //addToDirectory
+  app.post('/addToDirectory', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED TO ADD USER TO DIRECTORY");
 
     // Establish Database Connection
     const connection = establishConnection();
@@ -714,7 +714,8 @@ async function main() {
 
     // Make Query
     try {
-      `INSERT into DIRECTORY VALUES ('${req.body.CommunityID}', '${req.body.UserID}'`
+      let sql = `INSERT into DIRECTORY VALUES ('${req.body.communityID}', '${req.body.userID}')`;
+      db.query(connection, sql);
     } catch (e) {
       console.log(e);
     } finally {
@@ -726,11 +727,36 @@ async function main() {
   
   //removeUserFromDirectory
   
-  //loadUserGeneral
-  
-  //loadUserAdmin
-  
-  //loadUserBanned
+  //loadDirectory
+  app.post('/loadDirectory', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED TO Load Directory USERS");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let usernameData
+    let directoryData;
+
+    // Make Query
+    try {
+      sql = `select UserName FROM Member Member Inner Join Directory Directory ON Member.UserID = Directory.UserID AND directory.CommunityID = ${req.body.communityID};`;
+      directoryData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+
+
+    // Send the data back
+    console.log(directoryData[0]);
+    console.log("Sending Data Back\n");
+    res.send(directoryData);
+  })
   
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
