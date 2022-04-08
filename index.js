@@ -443,7 +443,7 @@ async function main() {
     // Setup Response Data
     let channelData;
     let uniqueID;
-    let index = 0;
+    let index = 1;
 
     // Make Query
     try {
