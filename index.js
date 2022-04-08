@@ -617,7 +617,7 @@ async function main() {
 
     // make query
     try {
-      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}', '${req.body.announcementTitle}' , '${req.body.announcementContents}', '${date}')`;
+      let sql = `INSERT into ANNOUNCEMENT VALUES ('${announcementID}', '${req.body.communityID}', '${req.body.announcementTitle}' , '${req.body.announcementDesc}')`;
       announcementData = await db.query(connection, sql);
     }  catch (e) {
       console.log(e);
