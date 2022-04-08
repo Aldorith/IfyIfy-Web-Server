@@ -145,7 +145,7 @@ async function main() {
         db.query(connection, sql);
 
         // Setup Default Profile Photo
-        fs.copyFile('defaultProfilePhoto.png', req.body.uid + '.png', (err) => {
+        fs.copyFile('/defaultProfilePhoto.png', "public/uploads/profilePhotos" + req.body.uid + '.png', (err) => {
           if (err) throw err;
           console.log('Default Profile Photo Copied');
         });
@@ -262,7 +262,7 @@ async function main() {
         // // TODO: Verify joinCode does not already exist
         // Connor B. can you do this
 
-        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}', null, null, null, null, '${communityJoinCode}')`;
+        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}', null, '${communityJoinCode}')`;
         db.query(connection, sql);
 
         // Get ID
@@ -274,13 +274,13 @@ async function main() {
         db.query(connection, sql);
 
         // Assign Default Community Icon
-        fs.copyFile('defaultCommunityIcon.png', communityData[0].CommunityID + '.png', (err) => {
+        fs.copyFile('defaultCommunityIcon.png', "public/uploads/communityIcons" + communityData[0].CommunityID + '.png', (err) => {
           if (err) throw err;
           console.log('Default Community Icon Copied');
         });
 
         // Assign Default Community Header
-        fs.copyFile('defaultHeader.png', communityData[0].CommunityID + '.png', (err) => {
+        fs.copyFile('defaultHeader.png', "public/uploads/communityHeaders" + communityData[0].CommunityID + '.png', (err) => {
           if (err) throw err;
           console.log('Default Community Header Copied');
         });
