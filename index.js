@@ -297,6 +297,42 @@ async function main() {
     res.send(communityData);
   })
 
+  // Delete Community
+  app.post('/removeCommunity', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let communityData;
+
+    // Make Query
+    try {
+      let sql = `DELETE FROM USERCOMMUNITY WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
+      sql = `DELETE FROM CHANNEL WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
+      sql = `DELETE FROM ANNOUNCEMENT WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
+      sql = `DELETE FROM EVENT WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
+      sql = `DELETE FROM COMMUNITY WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+
+    res.send(null);
+  })
+
   //Join Community
   app.post('/userJoinCommunity', jsonParser, async function (req, res) {
     // Establish Database Connection
@@ -333,6 +369,32 @@ async function main() {
     // Send the data back
     console.log("Sending Data Back\n");
     res.send(communityData);
+  })
+
+  // Leave Community
+  app.post('/userLeaveCommunity', jsonParser, async function (req, res) {
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let communityData;
+
+    // Make Query
+    try {
+      let sql = `DELETE FROM USERCOMMUNITY WHERE UserID = '${req.body.uid}' AND CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
+      console.log("Trying to remove user from community");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+
+    res.send(null);
   })
 
   // Chat
@@ -715,6 +777,7 @@ async function main() {
     res.send(announcementData);
   })
 
+  /* I think the directory table is redundant since the same data is stored in the usercommunity table
   //addToDirectory
   app.post('/addToDirectory', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED TO ADD USER TO DIRECTORY");
@@ -769,7 +832,9 @@ async function main() {
     console.log("Sending Data Back\n");
     res.send(directoryData);
   })
-  
+
+  */
+
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
     console.log("Photo Uploaded by " + req.body.uid);
