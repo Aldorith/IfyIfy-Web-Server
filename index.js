@@ -801,7 +801,9 @@ async function main() {
   })
   
   //removeUserFromDirectory
-  
+  */
+
+
   //loadDirectory
   app.post('/loadDirectory', jsonParser, async function (req, res) {
     console.log("\nAPI REQUEST RECEIVED TO Load Directory USERS");
@@ -817,7 +819,7 @@ async function main() {
 
     // Make Query
     try {
-      sql = `select UserName FROM Member Member Inner Join Directory Directory ON Member.UserID = Directory.UserID AND directory.CommunityID = ${req.body.communityID};`;
+      let sql = `select UserName FROM Member Member Inner Join usercommunity usercommunity ON Member.UserID = usercommunity.UserID AND usercommunity.CommunityID = ${req.body.communityID};`;
       directoryData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -833,7 +835,7 @@ async function main() {
     res.send(directoryData);
   })
 
-  */
+
 
   // Upload Profile Image
   app.post('/uploadProfilePhoto', profilePhotoUpload.single('profilePhoto'), function (req, res, next) {
