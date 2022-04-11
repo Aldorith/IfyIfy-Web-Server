@@ -235,63 +235,6 @@ async function main() {
     // Setup Response Data
     let communityData;
 
-    // Make Query
-    try {
-      let sql = `SELECT CommunityID from COMMUNITY WHERE CommunityName = '${req.body.communityName}'`;
-      communityData = await db.query(connection, sql);
-
-      if (communityData.length !== 0) {
-        console.log("Error, that Community Already Exists");
-
-        // - TO DO Add more error checking
-
-        console.log("Sending Error Messages Back\n");
-        // Error Message
-        /*
-        900 - Community Already Exisits
-        */
-        let sendBack = {statusCode: 900};
-        res.send(sendBack);
-      } else {
-        console.log("Adding Community to Database");
-
-        // Generate Unique CommunityID
-        let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
-        let communityJoinCode = num.slice(3, 10);
-
-        // // TODO: Verify joinCode does not already exist
-        // Connor B. can you do this
-
-        let sql = `INSERT into COMMUNITY VALUES (null, '${req.body.communityName}', '${req.body.communityDesc}', null, '${communityJoinCode}')`;
-        db.query(connection, sql);
-
-        // Get ID
-        sql = `SELECT * from COMMUNITY WHERE CommunityName = '${req.body.communityName}'`;
-        communityData = await db.query(connection, sql);
-        communityData.statusCode = 200;
-
-        sql = `INSERT into USERCOMMUNITY VALUES ('${req.body.uid}','${communityData[0].CommunityID}', true, 3)`;
-        db.query(connection, sql);
-
-        // Assign Default Community Icon
-        fs.copyFile('defaultCommunityIcon.png', "public/uploads/communityIcons/" + communityData[0].CommunityID + '.png', (err) => {
-          if (err) throw err;
-          console.log('Default Community Icon Copied');
-        });
-
-        // Assign Default Community Header
-        fs.copyFile('defaultHeader.png', "public/uploads/communityHeaders/" + communityData[0].CommunityID + '.png', (err) => {
-          if (err) throw err;
-          console.log('Default Community Header Copied');
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      await db.close(connection);
-    }
-
-
     // Send the data back
     console.log("Sending Data Back\n");
     res.send(communityData);
