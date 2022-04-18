@@ -585,7 +585,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.communityID}'`;
+      let sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.communityID}' ORDER BY EventDateTime ASC`;
       calendarData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -719,33 +719,6 @@ async function main() {
     console.log("Sending Data Back\n");
     res.send(announcementData);
   })
-
-  /* I think the directory table is redundant since the same data is stored in the usercommunity table
-  //addToDirectory
-  app.post('/addToDirectory', jsonParser, async function (req, res) {
-    console.log("\nAPI REQUEST RECEIVED TO ADD USER TO DIRECTORY");
-
-    // Establish Database Connection
-    const connection = establishConnection();
-    const db = makeDb();
-    await db.connect(connection);
-
-    // Make Query
-    try {
-      let sql = `INSERT into DIRECTORY VALUES ('${req.body.communityID}', '${req.body.userID}')`;
-      db.query(connection, sql);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      await db.close(connection);
-    }
-
-    console.log("Succesfully Added User to Directory");
-  })
-  
-  //removeUserFromDirectory
-  */
-
 
   //loadDirectory
   app.post('/loadDirectory', jsonParser, async function (req, res) {
