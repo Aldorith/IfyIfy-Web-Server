@@ -381,7 +381,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      let sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID) ORDER BY MessageID`;
       messageData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -421,7 +421,7 @@ async function main() {
       sql = `INSERT INTO MESSAGE VALUES ('${req.body.messageID+index}', '${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
       db.query(connection, sql);
 
-      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID)`;
+      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID) ORDER BY MessageID`;
       messageData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
