@@ -621,9 +621,22 @@ async function main() {
     const connection = establishConnection();
     const db = makeDb();
     await db.connect(connection);
+    let calendarData;
 
-    let sql = `DELETE FROM EVENT WHERE EventID = (${req.body.eventID});`;
-    db.query(connection, sql);
+    try{
+    let sql = `DELETE FROM EVENT WHERE EventID = '${req.body.eventID}' and CommunityID = '${req.body.commID}';`;
+    await db.query(connection, sql);
+    sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.commID}' ORDER BY EventDateTime ASC`;
+    calendarData = await db.query(connection, sql);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    await db.close(connection);
+  }
+  // Send the data back
+  console.log("EVENT_DATA: "+calendarData[0]);
+  console.log("Sending Data Back\n");
+  res.send(calendarData);
   })
 
   // Edit Calendar Event
