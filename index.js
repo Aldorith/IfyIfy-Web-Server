@@ -234,6 +234,29 @@ async function main() {
 
     // Setup Response Data
     let communityData;
+    let isUnique;
+    let index = 0;
+
+    // Make Query
+    try {
+      let sql = `SELECT CommunityID from COMMUNITY where CommunityID = '${index}'`;
+      isUnique = await db.query(connection, sql);
+      while (isUnique.length) {
+        index += 1;
+        sql = `SELECT CommunityID from COMMUNITY where CommunityID = '${index}'`;
+        isUnique = await db.query(connection, sql);
+      }
+      sql = `INSERT INTO COMMUNITY (CommunityID, CommunityName, CommunityDescription) VALUES ('${index}','${req.body.communityName}', '${req.body.communityDesc}');`;
+      await db.query(connection, sql);
+      sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${index}', 1, 1);`;
+      await db.query(connection, sql);
+      sql = `SELECT * from COMMUNITY WHERE CommunityID = '${req.body.communityID}';`;
+      communityData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
 
     // Send the data back
     console.log("Sending Data Back\n");
