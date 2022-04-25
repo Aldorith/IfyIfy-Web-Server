@@ -250,12 +250,31 @@ async function main() {
       let num = Date.now().toString(36) + Math.random().toString(36).substr(2);
       let communityJoinCode = num.slice(3,10);
 
-      sql = `INSERT INTO COMMUNITY (CommunityID, CommunityName, CommunityDescription, CommunityJoinCode) VALUES ('${index}','${req.body.communityName}', '${req.body.communityDesc}', '${communityJoinCode}');`;
+      sql = `INSERT INTO COMMUNITY (CommunityName, CommunityDescription, CommunityJoinCode) VALUES ('${req.body.communityName}', '${req.body.communityDesc}', '${communityJoinCode}');`;
       await db.query(connection, sql);
-      sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${index}', 1, 1);`;
-      await db.query(connection, sql);
-      sql = `SELECT * from COMMUNITY WHERE CommunityID = '${req.body.communityID}';`;
+
+      sql = `SELECT LAST_INSERT_ID() AS ID`;
+      let id = await db.query(connection, sql);
+      id = id[0].ID;
+
+      sql = `SELECT * from COMMUNITY WHERE CommunityID = '${id}';`;
       communityData = await db.query(connection, sql);
+
+      //console.log(communityData);
+
+      // Setup Default Images
+      fs.copyFile('/defaultCommunityIcon.png', "public/uploads/communityIcons/" + id + '.png', (err) => {
+        if (err) throw err;
+        console.log('Default Profile Photo Copied');
+      });
+      fs.copyFile('/defaultHeader.png', "public/uploads/communityHeaders/" + id + '.png', (err) => {
+        if (err) throw err;
+        console.log('Default Profile Photo Copied');
+      });
+
+
+      sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}',${id}, 1, 1);`;
+      await db.query(connection, sql);
     } catch (e) {
       console.log(e);
     } finally {
