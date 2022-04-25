@@ -253,11 +253,14 @@ async function main() {
       sql = `INSERT INTO COMMUNITY (CommunityName, CommunityDescription, CommunityJoinCode) VALUES ('${req.body.communityName}', '${req.body.communityDesc}', '${communityJoinCode}');`;
       await db.query(connection, sql);
 
-      sql = `SELECT LAST_INSERT_ID()`;
+      sql = `SELECT LAST_INSERT_ID() AS ID`;
       let id = await db.query(connection, sql);
+      id = id[0].ID;
 
       sql = `SELECT * from COMMUNITY WHERE CommunityID = '${id}';`;
       communityData = await db.query(connection, sql);
+
+      //console.log(communityData);
 
       sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}',${id}, 1, 1);`;
       await db.query(connection, sql);
