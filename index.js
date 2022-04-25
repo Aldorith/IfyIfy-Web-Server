@@ -262,6 +262,17 @@ async function main() {
 
       //console.log(communityData);
 
+      // Setup Default Images
+      fs.copyFile('/defaultCommunityIcon.png', "public/uploads/communityIcons/" + id + '.png', (err) => {
+        if (err) throw err;
+        console.log('Default Profile Photo Copied');
+      });
+      fs.copyFile('/defaultHeader.png', "public/uploads/communityHeaders/" + id + '.png', (err) => {
+        if (err) throw err;
+        console.log('Default Profile Photo Copied');
+      });
+
+
       sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}',${id}, 1, 1);`;
       await db.query(connection, sql);
     } catch (e) {
