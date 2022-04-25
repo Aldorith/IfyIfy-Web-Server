@@ -740,11 +740,24 @@ async function main() {
     const connection = establishConnection();
     const db = makeDb();
     await db.connect(connection);
+    console.log(req.body.communityID);
+    console.log(req.body.announcementID);
 
-    let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}'`;
-    db.query(connection, sql);
-
-    await db.close(connection);
+    let announcementData;
+    try {
+      let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}' and CommunityID = '${req.body.communityID}';`;
+      await db.query(connection, sql);
+      sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM Announcement WHERE CommunityID = '${req.body.communityID}'`;
+      announcementData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+    // Send the data back
+    console.log("ANNOUNCEMENT_DATA: "+announcementData[0]);
+    console.log("Sending Data Back\n");
+    res.send(announcementData);
   })
 
   //Edit Announcement
