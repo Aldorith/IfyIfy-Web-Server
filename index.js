@@ -184,7 +184,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `Select COMMUNITY.CommunityID, CommunityName from USERCOMMUNITY, COMMUNITY where UserCommunity.UserID = '${req.body.uid}' and USERCOMMUNITY.CommunityID = COMMUNITY.CommunityID`;
+      let sql = `Select COMMUNITY.CommunityID, CommunityName, CommunityJoinCode, AdminTrue from USERCOMMUNITY, COMMUNITY where UserCommunity.UserID = '${req.body.uid}' and USERCOMMUNITY.CommunityID = COMMUNITY.CommunityID`;
       userCommunityData = await db.query(connection, sql);
 
     } catch (e) {
