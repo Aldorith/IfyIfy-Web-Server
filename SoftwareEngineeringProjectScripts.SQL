@@ -24,7 +24,7 @@ CREATE TABLE COMMUNITY (
 CREATE TABLE DIRECTORY (
     CommunityID varchar(35)
      not null,
-    UserID varchar(35) not null,
+    UserID varchar(128) not null,
     CONSTRAINT DIRECTORY_PK PRIMARY KEY(CommunityID)) engine = innodb;
 
 CREATE TABLE USERCOMMUNITY (
@@ -44,12 +44,12 @@ CREATE TABLE CHANNEL (
 	CONSTRAINT Channel_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE) engine = innodb;
 
 CREATE TABLE MESSAGE (
-	MessageID integer not null,
+	MessageID integer not null AUTO_INCREMENT,
 	ChannelID integer not null,
 	CommunityID integer not null,
 	UserID VARCHAR(128),
 	MessageText VARCHAR(150),
-	MessageDateTime TIMESTAMP,
+	MessageDateTime VARCHAR(19),
 	CONSTRAINT Message_PK PRIMARY KEY (MessageID, ChannelID, CommunityID),
 	CONSTRAINT Message_FK1 FOREIGN KEY (ChannelID) references CHANNEL(ChannelID),
 	CONSTRAINT Message_FK2 FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID) ON DELETE CASCADE);
@@ -69,16 +69,16 @@ CREATE TABLE TEXTBOX (
 CREATE TABLE ANNOUNCEMENT (
 	AnnouncementID integer not null,
 	CommunityID integer not null,
-	AnnouncementTitle VARCHAR(30),
-	AnnouncementText VARCHAR(200),
+	AnnouncementTitle VARCHAR(50),
+	AnnouncementText VARCHAR(500),
 	CONSTRAINT Announcement_PK PRIMARY KEY (AnnouncementID, CommunityID),
 	CONSTRAINT Announcement_FK FOREIGN KEY (CommunityID) references COMMUNITY(CommunityID)) engine = innodb;
 
 CREATE TABLE EVENT (
 	EventID integer not null,
 	CommunityID integer not null,
-	EventTitle VARCHAR(30),
-	EventDescription VARCHAR(70),
+	EventTitle VARCHAR(50),
+	EventDescription VARCHAR(250),
 	EventDateTime VARCHAR(45),
 	EventLocation VARCHAR(45),
 	CONSTRAINT Event_PK PRIMARY KEY (EventID, CommunityID),

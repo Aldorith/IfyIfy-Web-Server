@@ -433,19 +433,10 @@ async function main() {
 
     // Setup Response Data
     let messageData;
-    let isUnique;
-    let index = 0;
 
     // Make Query
     try {
-      let sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
-      isUnique = await db.query(connection, sql);
-      while (isUnique.length) {
-        index += 1;
-        sql = `SELECT MessageID from Message where messageID = '${req.body.messageID+index}' and ChannelID = '${req.body.chanID}' and CommunityID = '${req.body.commID}'`;
-        isUnique = await db.query(connection, sql);
-      }
-      sql = `INSERT INTO MESSAGE VALUES ('${req.body.messageID+index}', '${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
+      let sql = `INSERT INTO MESSAGE (ChannelID, CommunityID, UserID, MessageText, MessageDateTime)VALUES ('${req.body.chanID}', '${req.body.commID}', '${req.body.uid}', '${req.body.messageText}', '${req.body.messageDateTime}')`;
       db.query(connection, sql);
 
       sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID) ORDER BY MessageID`;
@@ -464,6 +455,39 @@ async function main() {
     console.log("Sending Data Back\n");
     res.send(messageData);
   })
+
+  //Delete Messages
+  app.post('/deleteMessage', jsonParser, async function (req, res) {
+    console.log("\nAPI REQUEST RECEIVED");
+
+    // Establish Database Connection
+    const connection = establishConnection();
+    const db = makeDb();
+    await db.connect(connection);
+
+    // Setup Response Data
+    let messageData;
+
+    // Make Query
+    try {
+      console.log("MessID: "+ req.body.messID);
+      let sql = `DELETE FROM MESSAGE WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and MessageID = '${req.body.messID}';`;
+      await db.query(connection, sql);
+
+      sql = `SELECT UserName, MessageText, MessageDateTime, MessageID from MESSAGE, MEMBER WHERE CommunityID = '${req.body.commID}' and ChannelID = '${req.body.chanID}' and (MEMBER.UserID = MESSAGE.UserID) ORDER BY MessageID`;
+      messageData = await db.query(connection, sql);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      await db.close(connection);
+    }
+
+    // Send the data back
+    console.log(messageData[0]);
+    console.log("Sending Updated Message Data Back After Delete\n");
+    res.send(messageData);
+  })
+
 
   //Add New Channel
   app.post('/addChannel', jsonParser, async function (req, res) {
