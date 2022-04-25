@@ -145,7 +145,7 @@ async function main() {
         db.query(connection, sql);
 
         // Setup Default Profile Photo
-        fs.copyFile('/defaultProfilePhoto.png', "public/uploads/profilePhotos/" + req.body.uid + '.png', (err) => {
+        fs.copyFile('defaultProfilePhoto.png', "public/uploads/profilePhotos/" + req.body.uid + '.png', (err) => {
           if (err) throw err;
           console.log('Default Profile Photo Copied');
         });
@@ -266,13 +266,13 @@ async function main() {
       //console.log(communityData);
 
       // Setup Default Images
-      fs.copyFile('/defaultCommunityIcon.png', "public/uploads/communityIcons/" + id + '.png', (err) => {
+      fs.copyFile('defaultCommunityIcon.png', "public/uploads/communityIcons/" + id + '.png', (err) => {
         if (err) throw err;
-        console.log('Default Profile Photo Copied');
+        console.log('Default Community Photo Copied');
       });
-      fs.copyFile('/defaultHeader.png', "public/uploads/communityHeaders/" + id + '.png', (err) => {
+      fs.copyFile('defaultHeader.png', "public/uploads/communityHeaders/" + id + '.png', (err) => {
         if (err) throw err;
-        console.log('Default Profile Photo Copied');
+        console.log('Default Header Photo Copied');
       });
 
 
