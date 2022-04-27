@@ -306,6 +306,9 @@ async function main() {
       let sql = `DELETE FROM USERCOMMUNITY WHERE CommunityID = '${req.body.communityID}'`;
       db.query(connection, sql);
 
+      sql = `DELETE FROM MESSAGE WHERE CommunityID = '${req.body.communityID}'`;
+      db.query(connection, sql);
+
       sql = `DELETE FROM CHANNEL WHERE CommunityID = '${req.body.communityID}'`;
       db.query(connection, sql);
 
