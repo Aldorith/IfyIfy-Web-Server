@@ -158,6 +158,8 @@ async function main() {
         //communities = ....;
         //userData.communities = communities;
 
+      } else {
+        console.log("user already in database");
       }
     } catch (e) {
       console.log(e);
