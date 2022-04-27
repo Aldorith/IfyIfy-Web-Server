@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 8900;
+const port = 3000;
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
@@ -184,7 +184,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `Select COMMUNITY.CommunityID, CommunityName, CommunityJoinCode, AdminTrue from USERCOMMUNITY, COMMUNITY where UserCommunity.UserID = '${req.body.uid}' and USERCOMMUNITY.CommunityID = COMMUNITY.CommunityID`;
+      let sql = `Select COMMUNITY.CommunityID, CommunityName, CommunityJoinCode, AdminTrue from USERCOMMUNITY, COMMUNITY where USERCOMMUNITY.UserID = '${req.body.uid}' and USERCOMMUNITY.CommunityID = COMMUNITY.CommunityID`;
       userCommunityData = await db.query(connection, sql);
 
     } catch (e) {
@@ -276,7 +276,7 @@ async function main() {
       });
 
 
-      sql = `INSERT INTO userCommunity (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}',${id}, 1, 1);`;
+      sql = `INSERT INTO USERCOMMUNITY (UserID, CommunityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}',${id}, 1, 1);`;
       await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -346,7 +346,7 @@ async function main() {
       currentUser = await db.query(connection, sql);
 
       if (currentUser.length === 0) {
-        sql = `INSERT into userCommunity (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
+        sql = `INSERT into USERCOMMUNITY (userID, communityID, AdminTrue, PriorityLevel) VALUES ('${req.body.uid}','${commID}', 0, 1);`;
         db.query(connection, sql);
       } else {
         // Send the data back
@@ -626,7 +626,7 @@ async function main() {
     try{
     let sql = `DELETE FROM EVENT WHERE EventID = '${req.body.eventID}' and CommunityID = '${req.body.commID}';`;
     await db.query(connection, sql);
-    sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.commID}' ORDER BY EventDateTime ASC`;
+    sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From EVENT WHERE CommunityID = '${req.body.commID}' ORDER BY EventDateTime ASC`;
     calendarData = await db.query(connection, sql);
   } catch (e) {
     console.log(e);
@@ -648,7 +648,7 @@ async function main() {
     const db = makeDb();
     await db.connect(connection);
 
-    let sql = `DELETE FROM Event WHERE EventID = '${req.body.EventID}'`;
+    let sql = `DELETE FROM EVENT WHERE EventID = '${req.body.EventID}'`;
     db.query(connection, sql);
 
     sql = `INSERT into EVENT VALUES (${req.body.eventID}, ${req.body.communityID}, '${req.body.calendarEventName}' , '${req.body.calendarEventDesc}' , '${req.body.calendarEventDay}' , '${req.body.calendarEventLocation}')`;
@@ -671,7 +671,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From Event WHERE CommunityID = '${req.body.communityID}' ORDER BY EventDateTime ASC`;
+      let sql = `SELECT EventID, EventTitle, EventDescription, EventDateTime, EventLocation From EVENT WHERE CommunityID = '${req.body.communityID}' ORDER BY EventDateTime ASC`;
       calendarData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -758,9 +758,9 @@ async function main() {
 
     let announcementData;
     try {
-      let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}' and CommunityID = '${req.body.communityID}';`;
+      let sql = `DELETE FROM ANNOUNCEMENT WHERE AnnouncementID = '${req.body.announcementID}' and CommunityID = '${req.body.communityID}';`;
       await db.query(connection, sql);
-      sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM Announcement WHERE CommunityID = '${req.body.communityID}'`;
+      sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM ANNOUNCEMENT WHERE CommunityID = '${req.body.communityID}'`;
       announcementData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -782,7 +782,7 @@ async function main() {
     const db = makeDb();
     await db.connect(connection);
 
-    let sql = `DELETE FROM Announcement WHERE AnnouncementID = '${req.body.announcementID}'`;
+    let sql = `DELETE FROM ANNOUNCEMENT WHERE AnnouncementID = '${req.body.announcementID}'`;
     db.query(connection, sql);
 
     sql = `INSERT into ANNOUNCEMENT VALUES ('${req.body.announcementID}', '${req.body.communityID}' , '${req.body.announcementTitle}' , '${req.body.announcementContents}')`;
@@ -805,7 +805,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM Announcement WHERE CommunityID = '${req.body.communityID}'`;
+      let sql = `SELECT AnnouncementID, AnnouncementTitle, AnnouncementText FROM ANNOUNCEMENT WHERE CommunityID = '${req.body.communityID}'`;
       announcementData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
@@ -834,7 +834,7 @@ async function main() {
 
     // Make Query
     try {
-      let sql = `select UserName, usercommunity.UserID as uid FROM Member Member Inner Join usercommunity usercommunity ON Member.UserID = usercommunity.UserID AND usercommunity.CommunityID = ${req.body.communityID};`;
+      let sql = `select UserName, USERCOMMUNITY.UserID as uid FROM MEMBER MEMBER Inner Join USERCOMMUNITY USERCOMMUNITY ON MEMBER.UserID = USERCOMMUNITY.UserID AND USERCOMMUNITY.CommunityID = ${req.body.communityID};`;
       directoryData = await db.query(connection, sql);
     } catch (e) {
       console.log(e);
