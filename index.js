@@ -259,7 +259,7 @@ async function main() {
       let id = await db.query(connection, sql);
       id = id[0].ID;
 
-      sql = `INSERT INTO CHANNEL (ChannelID, CommunityID, ChannelName) VALUES (1, '${id}', "Channel 1");`;
+      sql = `INSERT INTO CHANNEL (ChannelID, CommunityID, ChannelName) VALUES (1, '${id}', 'Channel 1');`;
       await db.query(connection, sql);
 
       sql = `SELECT * from COMMUNITY WHERE CommunityID = '${id}';`;
