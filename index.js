@@ -124,7 +124,7 @@ async function main() {
 
   // Get User Data
   app.post('/getUserData', jsonParser, async function (req, res) {
-    console.log("\nAPI REQUEST RECEIVED");
+    console.log("\n /getUserData - API REQUEST RECEIVED");
 
     // Establish Database Connection
     const connection = establishConnection();
